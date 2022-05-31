@@ -1,0 +1,3 @@
+barto	26	0
+Komputer	0	1
+3
