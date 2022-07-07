@@ -1,3 +1,4 @@
+#include <cstdio>
 #ifndef libClass_hpp
 #define libClass_hpp
 
@@ -14,13 +15,14 @@
 //maksymalna ilosc odganiec podczas jednej rund
 #define MOVES 10
 //typ kolorow
-enum { red = 'R', green = 'G', blue = 'B', orange = 'O', purple = 'P', yellow = 'Y' };
-//tyg rozgrywki
-enum gameType { PvP = 1, PvC = 2 };
+enum availableColors { red = 'R', green = 'G', blue = 'B', orange = 'O', purple = 'P', yellow = 'Y' };
 
 class Player;
 class Game;
-
+///////////////////////////
+//		class Move		 //
+///////////////////////////
+/*Klasa przechowuje zapis jednego ruchu, wykonywanego przez gracza w danej rundzie*/
 class Move {
 	friend class Round;
 	char guess[CODE_L];			//proba odganiecia
@@ -41,7 +43,10 @@ public:
 	void checkCorrectPlace(char*);
 	void checkCorrectColour(char*);
 };
-
+///////////////////////////
+//		class Round		 //
+///////////////////////////
+/*Klasa przechowuje zapis jednej rundy  rozgrywki, skladajacej sie z kolejnych ruchow*/
 class Round {
 	char code[CODE_L];				//tablica zawierajaca ustalony przez gracza kod
 	unsigned int moveCounter;		//ilosc wykonanych ruchow w aktualnej rundzie
@@ -60,7 +65,10 @@ public:
 	unsigned int getMove(void);
 	void nextMove(Player*);
 };
-
+//////////////////////////////
+//		class Player		//
+//////////////////////////////
+/*Klasa przechowuje informacje o jednym graczu*/
 class Player {
 	char nick[40];			//tablica zawierajaca nick gracza
 	unsigned int points;	//ilosc punktow zromadzona przez gracza
@@ -79,9 +87,11 @@ public:
 	virtual void setCode(char*);
 	virtual void nextRound(Game*, Player*);
 	const Player& operator++(void);	
-	friend void Round::nextMove(Player* p);
 };
-
+//////////////////////////////
+//		class Computer		//
+//////////////////////////////
+/*Klasa stosowana podczas rozgrywki gracz kontra komputer, oznaczajaca komputer*/
 class Computer : public Player {
 public:
 	Computer();
@@ -90,7 +100,10 @@ public:
 	void setCode(char*);
 	void nextRound(Game* g, Player*);
 };
-
+//////////////////////////
+//		class Game		//
+//////////////////////////
+/*Klasa przechowywuje zapis gry, skladajacej sie z rund*/
 class Game {
 	unsigned int roundCounter;		//ilosc rozegranych rund
 public:
@@ -104,25 +117,49 @@ public:
 	~Game();
 	void setRoundCounter(unsigned int);
 	unsigned int getRoundCounter(void);
-	gameType gameMode(void);
+	int gameMode(void);
 	void gameStartPVP(void);
 	void gameStartPVC(void);
 	void gameEndPvP(void);
 	void gameEndPvC(void);
-	void nextRound(Player*, Player*);
-	friend void Computer::nextRound(Game*, Player*);
 	void game2file(void);
 	const Game& operator=(const Game&);
 };
-//Klasa sluzaca do utworzenia listy dynamicznej, zawierajacej historie rozgrywki
-class gameHistory {
+//Szablon klasy sluzaca do utworzenia listy dynamicznej, zawierajacej historie rozgrywki
+template <typename type, int size>
+class gameHistory: public Game {
 public:
-	Player* playerOne;		//wskazik do obiektu klasy Player oznaczajacego gracza pierwszego
-	Player* playerTwo;		//wskazik do obiektu klasy Player oznaczajacego gracza drugiego
-	char date[80];			//tablica sluzaca do przechowywania daty
-	char time[80];			//tablica sluzaca do przechowywania godziny
-	gameHistory* next;		//wskazik do nastepnego obiektu klasy gameHistory
+	type date[size];			//tablica sluzaca do przechowywania daty
+	type time[size];			//tablica sluzaca do przechowywania godziny
+	gameHistory<type, size>* next;		//wskazik do nastepnego obiektu klasy gameHistory
 	~gameHistory();
 	gameHistory();
+	gameHistory(char* ,char*, unsigned int, Player*, Player*, Round*);
+	gameHistory(gameHistory&);
 };
+template <typename type, int size>
+gameHistory<type, size>::gameHistory() : Game() {
+	next = NULL;
+	date[0] = { '\0' };
+	time[0] = { '\0' };
+}
+/*Konsturtor argumentowy, przekazujacy wartosci z przekazanych argumentow do pol nowego obiektu*/
+template <typename type, int size>
+gameHistory<type, size>::gameHistory(char* d, char* t, unsigned int c, Player* p1, Player* p2, Round* r) : Game(c, p1, p2, r) {
+	strcpy(date, d);
+	strcpy(time, t);
+	next = NULL;
+}
+/*Konsturtor kopiujacy, przekazujacy wartosci z pol z obiektu gh do pol nowego obiektu*/
+template <typename type, int size>
+gameHistory<type, size>::gameHistory(gameHistory& gh) : Game(gh.getRoundCounter(), gh.playerOne, gh.playerTwo, gh.firstRound) {
+	strcpy(date, gh.date);
+	strcpy(time, gh.time);
+	next = NULL;
+}
+/*Destruktor usuwajacy obiekty dynamiczne*/
+template <typename type, int size>
+gameHistory<type, size>::~gameHistory() {
+	delete next;
+}
 #endif // !libClass_hpp

@@ -1,3 +1,3 @@
-barto	26	0
-Komputer	0	1
-3
+barto	0	0
+kebar	1	0
+1

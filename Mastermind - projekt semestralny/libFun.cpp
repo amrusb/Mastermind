@@ -9,18 +9,14 @@
 #pragma warning (disable: 6031)
 using namespace std;
 
-//Funkcja czysci okno konsoli
-void clearScreen(void) {
-	//cout << "\x1B[2J\x1B[H";
-	cout << endl;
-}
+
 //Funkcja wypisuje informacje dotyczaca gry
 void gameInfo(void) {
 	cout << "\t=========================================" << endl;
 	cout << "\t|		MASTERMIND		|" << endl;
 	cout << "\t=========================================\n" << endl;
 	cout << "Witaj w grze 'Mastermind'." << endl;
-	cout << "Celem gry jest odganiecie 4-kolorowego kodu, ulozonego przez drugiego gracza, maksymalnie w " << MOVES <<" ruchach." << endl;
+	cout << "Celem gry jest odgadniecie 4-kolorowego kodu, ulozonego przez drugiego gracza, maksymalnie w " << MOVES <<" ruchach." << endl;
 	cout << "Za kazdy bledna probe odganiecia gracz dostaje 1 punkt."<< endl;
 	cout << "Kazda gra sklada sie z " << ROUNDS << " rund." << endl;
 	cout << "Wygrywa gracz z najmniejsza iloscia punktow." << endl;
@@ -37,6 +33,8 @@ void gameInfo(void) {
 	cout << "\t2. GRACZ vs. KOMPUTER:\t";
 	cout << "W rozgrywce bierze udzial jeden gracz, ktory probuje odgadnac kod.\n" << endl;
 	cout << "Po kazdej rundzie jest mozliwosc przerwania i zapisania gry.\n" << endl;
+	cout << "Autor: Bartosz Surma" << endl;
+	cout << "nr albumu: 120 859, grupa 5" << endl;
 }
 /*Funkcja zczytuje zapisany postep gry z pliku tekstowego do nowego obiektu klasy Game i zwraca ten obiekt, jezeli operacja odczytu sie powiedzie.
 * W przeciwnym razie inicjalizuje nowy obiekt i rozpoczyna rozgrywke.*/
@@ -90,14 +88,14 @@ void loadGameplay(Game&gameplay) {
 }
 /*Funkcja rozpoczyna nowa rozgrywke*/
 void initializeGameplay(Game& gameplay) {
-	gameType temp;
+	int temp;
 	temp = gameplay.gameMode();
 	switch (temp) {
-	case PvP:
+	case 1:
 		gameplay.gameStartPVP();
 		gameplay.gameEndPvP();
 		break;
-	case PvC:
+	case 2:
 		gameplay.gameStartPVC();
 		gameplay.gameEndPvC();
 		break;
@@ -106,11 +104,11 @@ void initializeGameplay(Game& gameplay) {
 /*Funkcja wyswietla menu konca rozgrywki. Uzytkownik moze rozpoczac nowa gre, wyjsc z gry i wyswietlic historie rozgrywki.
 * Funkcja zwraca wartosc true albo false*/
 bool endMenu(void) {
-	bool t;
+	bool t = true;
 	cout << "\nWybierz:" << endl;
 	cout << "\t[1] - Nowa gra." << endl;
-	cout << "\t[2] - Wyjdz z gry" << endl;
-	cout << "\t[3] - Pokaz historie" << endl;
+	cout << "\t[2] - Pokaz historie" << endl;
+	cout << "\t[3] - Wyjdz z gry" << endl;
 	cout << "\n>>>\t";
 	int m = getThreeOptions<int>();
 	switch (m) {
@@ -118,11 +116,11 @@ bool endMenu(void) {
 		t = true;
 		break;
 	case 2:
-		t = false;
+		showHisotry();
+		 t = endMenu();
 		break;
 	case 3:
-		showHisotry();
-		endMenu();
+		t = false;
 		break;
 	}
 	return t;
@@ -149,7 +147,7 @@ char* checkTime(void) {
 }
 /*Funkcja zapisuje do pliku historie rozgrywek w kolejnosci od najnowszej do najstarszej*/
 void saveHistory(Game& g) {
-	gameHistory* head = NULL, * pointer = NULL;
+	gameHistory<char, 80>* head = NULL, * pointer = NULL;
 	unsigned int p1, p2;
 	char nick1[40] = { '\0' }, nick2[40] = { '\0' }, date[80] = { '\0' }, time[80] = { '\0' };
 	strcpy(time, checkTime());
@@ -164,14 +162,14 @@ void saveHistory(Game& g) {
 	}
 	else {
 		//zczytanie dotyczasowego pliku
-		head = pointer = new gameHistory;
-		allocationCheck<gameHistory*>(head);
+		head = pointer = new gameHistory<char, 80>;
+		allocationCheck<gameHistory<char, 80>*>(head);
 		fscanf(stream, "%s %s %s %d %s %d", pointer->date,pointer->time, nick1, &p1, nick2, &p2);
 		pointer->playerOne = new Player(nick1, p1, 0);
 		pointer->playerTwo = new Player(nick2, p2, 0);
 ;		pointer->next = NULL;
 		while (!feof(stream)) {
-			pointer->next = new gameHistory;
+			pointer->next = new gameHistory<char, 80>;
 			pointer = pointer->next;
 			pointer->next = NULL;
 			fscanf(stream, "%s %s %s %d %s %d ", pointer->date, pointer->time, nick1, &p1, nick2, &p2);
@@ -207,12 +205,12 @@ void showHisotry(void) {
 		do{
 			fscanf(stream, "%s %s %s %d %s %d", date, time, nick1, &p1, nick2, &p2);
 			if (strcmp(nick2, PC)) {
-				cout << i++ << ". " << date << "r. godz. " << time << endl;
+				cout << i++ << ". " << date << " r. godz. " << time << endl;
 				cout << nick1 << " - " << p1 << " pkt. VS. " << nick2 << " - " << p2 << " pkt." << endl;
 				cout << "Zwyciezca tury: " << (p1 == p2 ? "REMIS" : (p1 < p2 ? nick1 : nick2)) << "\n" << endl;
 			}
 			else {
-				cout << i++ << ". " << date << "r. godz. " << time << endl;
+				cout << i++ << ". " << date << " r. godz. " << time << endl;
 				cout << nick1 << " - " << p1 << " pkt.\n" << endl;
 			}
 		} while (!feof(stream));

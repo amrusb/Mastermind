@@ -1,0 +1,8 @@
+﻿  libClass.cpp
+C:\Users\Bartek\Documents\05. UKSW Informatyka\01. Rok I\Semestr II\Programowanie obiektowe\Labolatorium\Mastermind\Mastermind - projekt semestralny\libClass.cpp(295,7): warning C4101: "buff": lokalna zmienna, do której nie istnieje odwołanie
+  libFun.cpp
+  main.cpp
+  Generowanie kodu...
+C:\Users\Bartek\Documents\05. UKSW Informatyka\01. Rok I\Semestr II\Programowanie obiektowe\Labolatorium\Mastermind\Mastermind - projekt semestralny\libFun.cpp(146): warning C4172: zwracanie adresu lokalnej zmiennej lub tymczasowej: buffer
+C:\Users\Bartek\Documents\05. UKSW Informatyka\01. Rok I\Semestr II\Programowanie obiektowe\Labolatorium\Mastermind\Mastermind - projekt semestralny\libFun.cpp(136): warning C4172: zwracanie adresu lokalnej zmiennej lub tymczasowej: buffer
+  Mastermind - projekt semestralny.vcxproj -> C:\Users\Bartek\Documents\05. UKSW Informatyka\01. Rok I\Semestr II\Programowanie obiektowe\Labolatorium\Mastermind\Debug\Mastermind.exe

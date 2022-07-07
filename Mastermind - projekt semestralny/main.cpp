@@ -9,7 +9,7 @@
 
 using namespace std;
 
-int main() {
+int main(int argc, char *argv[]) {
 	Game* gameplay = new Game();
 	allocationCheck<Game*>(gameplay);
 	bool next;
@@ -25,10 +25,10 @@ int main() {
 		m = getThreeOptions<int>();
 		switch (m) {
 		case 1:
-			clearScreen();
+			cout.put('\n');
 			break;
 		case 2:
-			clearScreen();
+			cout.put('\n');
 			showHisotry();
 			break;
 		case 3:
@@ -42,18 +42,18 @@ int main() {
 	m = getTwoOptions<int>();
 	switch (m) {
 	case 1:
-		clearScreen();
+		cout.put('\n');
 		loadGameplay(*gameplay);
 		break;
 	case 2:
-		clearScreen();
+		cout.put('\n');
 		initializeGameplay(*gameplay);
 		break;
 	}
 	delete gameplay;
 	next = endMenu();
 	while (next) {
-		clearScreen();
+		cout.put('\n');
 		Game* gameplay = new Game();
 		allocationCheck<Game*>(gameplay);
 		initializeGameplay(*gameplay);

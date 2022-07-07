@@ -5,8 +5,6 @@
 #ifndef libFun_hpp
 #define libFun_hpp
 
-//Funkcja przesuwa kurosr do samej gory konsoli
-void clearScreen(void);
 //Funkcja wypisuje informacje dotyczaca poczatku gry
 void gameInfo(void);
 /*Szablon funkcji, sprawdzajacej alokacje zmiennej dynamicznej*/

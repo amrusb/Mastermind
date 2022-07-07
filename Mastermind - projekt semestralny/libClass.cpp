@@ -10,10 +10,11 @@
 #pragma warning (disable: 4996)
 
 using namespace std;
-
+class Game;
 ///////////////////////////
 //		class Move		 //
 ///////////////////////////
+/*Klasa przechowuje zapis jednego ruchu, wykonywanego przez gracza w danej rundzie*/
 /*Konstruktor domyslny przypisujacy domyslne wartosci do pol nowego obiektu*/
 Move::Move() {
 	guess[0] = { '\0' };
@@ -87,6 +88,8 @@ void Move::checkCorrectColour(char* code) {
 ///////////////////////////
 //		class Round		 //
 ///////////////////////////
+/*Klasa przechowuje zapis jednej rundy  rozgrywki, skladajacej sie z kolejnych ruchow*/
+
 /*Konstruktor domyslny przypisujacy domyslne wartosci do pol nowego obiektu*/
 Round::Round() {
 	code[0] = { '\0' };
@@ -160,7 +163,7 @@ void Round::nextMove(Player* p) {
 		win = true;
 	}
 	else if (moveCounter == MOVES) {
-		cout << "Niestety nieudalo Ci sie odganac kodu." << endl;
+		cout << "Niestety nieudalo Ci sie odgadnac kodu." << endl;
 		cout << "Kod ustalony podczas rozgrywki:\t" << code << endl;
 	}
 }
@@ -168,6 +171,8 @@ void Round::nextMove(Player* p) {
 //////////////////////////////
 //		class Player		//
 //////////////////////////////
+/*Klasa przechowuje informacje o jednym graczu*/
+
 /*Konstruktor domyslny przypisujacy domyslne wartosci do pol nowego obiektu*/
 Player::Player() {
 	strcpy(nick, "Gracz");
@@ -259,6 +264,8 @@ void Player::guessCode(char * buff) {
 				for (int j = 0; j <= i; ++j) {
 					cout.put(buff[j]);
 				}	
+				while (getchar() != '\n')
+					;
 				c = getchar();
 				c = toupper(c);
 				continue;
@@ -309,6 +316,8 @@ void Player::nextRound(Game* g, Player* player) {
 //////////////////////////////
 //		class Computer		//
 //////////////////////////////
+/*Klasa stosowana podczas rozgrywki gracz kontra komputer, oznaczajaca komputer*/
+
 /*Konstruktor domyslny przypisujacy domyslne wartosci do pol obiektu klasy Player*/
 Computer::Computer(): Player(){}
 /*Konsturtor argumentowy, przekazujacy wartosci z przekazanych argumentow do pol obiektu klasy Player*/
@@ -365,6 +374,8 @@ void Computer::nextRound(Game* g, Player* p) {
 //////////////////////////
 //		class Game		//
 //////////////////////////
+/*Klasa przechowywuje zapis gry, skladajacej sie z rund*/
+
 /*Konstruktor domyslny przypisujacy domyslne wartosci do pol nowego obiektu*/
 Game::Game() {
 	roundCounter = 0;
@@ -401,15 +412,15 @@ unsigned int Game::getRoundCounter(void) {
 	return roundCounter;
 }
 /*Metoda pobiera od uzytkownika informacje o trybie przeprowadzanej gry*/
-gameType Game::gameMode(void) {
+int Game::gameMode(void) {
 	cout << "\nWybierz tryb gry:\n" << endl;
 	cout << "\t[1] - Gracz kontra gracz" << endl;
 	cout << "\t[2] - Gracz kontra komputer" << endl;
 	cout << "\n>>>\t";
 	char buff[40];
-	gameType type = getTwoOptions<gameType>();
+	int type = getTwoOptions<int>();
 	switch (type) {
-	case PvP:
+	case 1:
 		cout << "\nWprowadz nick 1. gracza" << endl;
 		cout << "\n>>>\t";
 		cin >> buff;
@@ -423,7 +434,7 @@ gameType Game::gameMode(void) {
 		allocationCheck(playerTwo);
 		playerTwo->setNick(buff);
 		break;
-	case PvC:
+	case 2:
 		cout << "\nWprowadz swoj nick" << endl;
 		cout << "\n>>>\t";
 		cin >> buff;
@@ -440,30 +451,9 @@ gameType Game::gameMode(void) {
 	}
 	return type;
 }
-/*Metoda inicjalizuje kolejna runde*/
-void Game::nextRound(Player* pOne, Player * pTwo) {
-	if (firstRound == NULL) {
-		firstRound = pointRound = new Round();
-		allocationCheck(firstRound);
-	}
-	else {
-		pointRound->next = new Round();
-		allocationCheck(pointRound->next);
-		pointRound = pointRound->next;
-	}
-	cout << "\nGracz " << pOne->getNick() << " ustala kod." << endl;
-	//ustalenie kodu
-	cout << "[R] - czerwony, [G] - zielony, [B] - niebieski, [O] - pomaranczowy, [P] - fioletowy, [Y] - zolty" << endl;
-	cout << "\n>>>\t";
-	pOne->setCode(pointRound->getCode());
-	cout << "\n\nGracz " << pTwo->getNick() << " odgaduje kod.\n" << endl;
-	for (int i = 0; i < MOVES && !pointRound->win; ++i) {
-		pointRound->nextMove(pTwo);
-	}
-}
 /*Metoda rozpoczyna gre trybu Gracz kontra gracz*/
 void Game::gameStartPVP(void) {
-	clearScreen();
+	cout.put('\n');
 	cout <<"\nGRE ROZPOCZYNA GRACZ: "<< playerOne->getNick() << endl;
 	int i = roundCounter;
 	for (i; i < ROUNDS; ++i) {
@@ -479,7 +469,7 @@ void Game::gameStartPVP(void) {
 			int m = getTwoOptions<int>();
 			switch (m) {
 			case 1:
-				clearScreen();
+				cout.put('\n');
 				break;
 			case 2:
 				game2file();
@@ -493,7 +483,7 @@ void Game::gameStartPVP(void) {
 }
 /*Metoda rozpoczyna gre trybu Gracz kontra komputer*/
 void Game::gameStartPVC(void) {
-	clearScreen();
+	cout.put('\n');
 	int i = roundCounter;
 	for (i; i < ROUNDS; ++i) {
 		cout << "RUNDA " << ++roundCounter << endl;
@@ -507,7 +497,7 @@ void Game::gameStartPVC(void) {
 			int m = getTwoOptions<int>();
 			switch (m) {
 			case 1:
-				clearScreen();
+				cout.put('\n');
 				break;
 			case 2:
 				game2file();
@@ -563,22 +553,4 @@ const Game& Game::operator=(const Game& g) {
 	else
 		playerTwo = new Computer(g.playerTwo->getNick(), g.playerTwo->getPoints(), 1);
 	return *this;
-}
-
-//////////////////////////////////
-//		class gameHistory		//
-//////////////////////////////////
-/*Konstruktor domyslny przypisujacy domyslne wartosci do pol nowego obiektu*/
-gameHistory::gameHistory() {
-	playerOne = NULL;
-	playerTwo = NULL;
-	next = NULL;
-	date[0] = { '\0' };
-	time[0] = { '\0' };
-}
-/*Destruktor usuwajacy obiekty dynamiczne*/
-gameHistory::~gameHistory() {
-	delete playerOne;
-	delete playerTwo;
-	delete next;
 }
