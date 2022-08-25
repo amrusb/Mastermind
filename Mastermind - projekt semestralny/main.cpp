@@ -17,10 +17,10 @@ int main(int argc, char *argv[]) {
 	srand((unsigned)time(NULL));
 	gameInfo();
 	do {
-		cout << "\nWybierz:\n" << endl;
-		cout << "\t[1] - Rozpocznij gre" << endl;
-		cout << "\t[2] - Pokaz historie" << endl;
-		cout << "\t[3] - Wyjdz" << endl;
+		cout << "\nChoose:\n" << endl;
+		cout << "\t[1] - start a game" << endl;
+		cout << "\t[2] - show history" << endl;
+		cout << "\t[3] - quit" << endl;
 		cout << "\n>>>\t";
 		m = getThreeOptions<int>();
 		switch (m) {
@@ -35,9 +35,9 @@ int main(int argc, char *argv[]) {
 			return 0;
 		}
 	} while (m != 1);
-	cout << "\nWybierz:\n" << endl;
-	cout << "\t[1] - Wczytaj gre" << endl;
-	cout << "\t[2] - Nowa gra" << endl;
+	cout << "\nChoose:\n" << endl;
+	cout << "\t[1] - load the game" << endl;
+	cout << "\t[2] - new game" << endl;
 	cout << "\n>>>\t";
 	m = getTwoOptions<int>();
 	switch (m) {

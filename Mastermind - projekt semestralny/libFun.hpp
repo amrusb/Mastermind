@@ -11,7 +11,7 @@ void gameInfo(void);
 template <typename type>
 void allocationCheck(const type pointer) {
 	if (pointer == NULL) {
-		std::cout << "\nBlad alokacji obiektu lub otwarcia pliku.\n" << std::endl;
+		std::cout << "\ERROR.\n" << std::endl;
 		exit(1);
 	}
 }
@@ -20,7 +20,7 @@ template <typename type>
 type getTwoOptions(void) {
 	type m;
 	while (scanf("%d", &m) != 1 || m < 1 || m > 2 || getchar() != '\n') {
-		std::cout << "Podano bledne dane. Popraw: " << std::endl;
+		std::cout << "You have entered wrong input. Try again: " << std::endl;
 		std::cout << "\n>>>\t";
 		while (getchar() != '\n')
 			;
@@ -32,7 +32,7 @@ template <typename type>
 type getThreeOptions(void) {
 	type m;
 	while (scanf("%d", &m) != 1 || m < 1 || m > 3 || getchar() != '\n') {
-		std::cout << "Podano bledne dane. Popraw: " << std::endl;
+		std::cout << "You have entered wrong input. Try again: " << std::endl;
 		std::cout << "\n>>>\t";
 		while (getchar() != '\n')
 			;

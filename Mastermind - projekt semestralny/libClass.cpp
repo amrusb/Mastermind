@@ -159,12 +159,12 @@ void Round::nextMove(Player* p) {
 	if(pointMove->getCorrectPlace() != CODE_L)
 		++(*p);
 	if (pointMove->getCorrectPlace() == CODE_L) {
-		cout << "Brawo! Odgadles kod w " << moveCounter << " ruchach!\n" << endl;
+		cout << "Bravo! You have guessed the code in " << moveCounter << " moves!\n" << endl;
 		win = true;
 	}
 	else if (moveCounter == MOVES) {
-		cout << "Niestety nieudalo Ci sie odgadnac kodu." << endl;
-		cout << "Kod ustalony podczas rozgrywki:\t" << code << endl;
+		cout << "Unfortunately you weren't able to guess the code." << endl;
+		cout << "The code:\t" << code << endl;
 	}
 }
 
@@ -175,7 +175,7 @@ void Round::nextMove(Player* p) {
 
 /*Konstruktor domyslny przypisujacy domyslne wartosci do pol nowego obiektu*/
 Player::Player() {
-	strcpy(nick, "Gracz");
+	strcpy(nick, "PLAYER");
 	points = 0;
 	isComputer = 0;
 }
@@ -224,7 +224,7 @@ void Player::setCode(char* buff) {
 		c = toupper(c);
 		while (c != red && c != green && c != blue && c != orange && c != purple && c != yellow) {
 			if (isspace(c)) {
-				cout << "\nPodales niedozwolony znak. Popraw kod od " <<  i+1<<" znaku." << endl;
+				cout << "\nYou have entered wrong character. Try again from the" <<  i + 1 << (i+1 == 1 ? "st": i+1 == 2 ? "nd": i+1 == 3 ? "rd": "nd") << " character." << endl;
 				cout << "\n>>>\t";
 				for (int j = 0; j < i; ++j) {
 					cout.put('X');
@@ -234,7 +234,7 @@ void Player::setCode(char* buff) {
 				continue;
 			}
 			else {
-				cout << "\nPodales bledny kod. Popraw kod od " << i + 1 << " znaku." << endl;
+				cout << "\nYou have entered wrong code. Try again from the" << i + 1 << (i + 1 == 1 ? "st" : i + 1 == 2 ? "nd" : i + 1 == 3 ? "rd" : "nd") << " character." << endl;
 				cout << "\n>>>\t";
 				for (int j = 0; j < i; ++j) {
 					cout.put('X');
@@ -259,7 +259,7 @@ void Player::guessCode(char * buff) {
 		c = toupper(c);
 		while (c != red && c != green && c != blue && c != orange && c != purple && c != yellow) {
 			if (isspace(c)) {
-				cout << "\nPodales niedozwolony znak. Popraw kod od " << i + 1 << " znaku." << endl;
+				cout << "\nYou have entered wrong character. Try again from the" << i + 1 << (i + 1 == 1 ? "st" : i + 1 == 2 ? "nd" : i + 1 == 3 ? "rd" : "nd") << " character." << endl;
 				cout << "\n>>>\t";
 				for (int j = 0; j <= i; ++j) {
 					cout.put(buff[j]);
@@ -270,7 +270,7 @@ void Player::guessCode(char * buff) {
 				c = toupper(c);
 				continue;
 			}
-			cout << "Podales bledny kod. Popraw kod od " << i + 1 << " znaku." << endl;
+			cout << "\nYou have entered wrong code. Try again from the" << i + 1 << (i + 1 == 1 ? "st" : i + 1 == 2 ? "nd" : i + 1 == 3 ? "rd" : "nd") << " character." << endl;
 			cout << "\n>>>\t";
 			for (int j = 0; j <= i; ++j) {
 				cout.put(buff[j]);
@@ -302,9 +302,9 @@ void Player::nextRound(Game* g, Player* player) {
 		allocationCheck(g->pointRound->next);
 		g->pointRound = g->pointRound->next;
 	}
-	cout << "Gracz " << getNick() << " ustala kod." << endl;
+	cout << "Player " << getNick() << " is putting up a code." << endl;
 	//ustalenie kodu
-	cout << "[R] - czerwony, [G] - zielony, [B] - niebieski, [O] - pomaranczowy, [P] - fioletowy, [Y] - zolty" << endl;
+	cout << "[R] - red, [G] - green, [B] - blue, [O] - orange, [P] - purple, [Y] - yellow" << endl;
 	cout << "\n>>>\t";
 	setCode(g->pointRound->getCode());
 	cout << "\nGracz " << player->getNick() << " odgaduje kod.\n" << endl;
@@ -366,7 +366,7 @@ void Computer::nextRound(Game* g, Player* p) {
 		g->pointRound = g->pointRound->next;
 	}
 	setCode(g->pointRound->getCode());
-	cout << "\nSprobuj odgadnac kod!\n" << endl;
+	cout << "\nTry to guess the code!\n" << endl;
 	for (int i = 0; i < MOVES && !g->pointRound->win; ++i) {
 		g->pointRound->nextMove(p);
 	}
@@ -413,21 +413,21 @@ unsigned int Game::getRoundCounter(void) {
 }
 /*Metoda pobiera od uzytkownika informacje o trybie przeprowadzanej gry*/
 int Game::gameMode(void) {
-	cout << "\nWybierz tryb gry:\n" << endl;
-	cout << "\t[1] - Gracz kontra gracz" << endl;
-	cout << "\t[2] - Gracz kontra komputer" << endl;
+	cout << "\nChoose the gameplay mode:\n" << endl;
+	cout << "\t[1] - Player vs Player" << endl;
+	cout << "\t[2] - Player vs Computer" << endl;
 	cout << "\n>>>\t";
 	char buff[40];
 	int type = getTwoOptions<int>();
 	switch (type) {
 	case 1:
-		cout << "\nWprowadz nick 1. gracza" << endl;
+		cout << "\nEnter the 1st player's nick: " << endl;
 		cout << "\n>>>\t";
 		cin >> buff;
 		playerOne = new Player();
 		allocationCheck(playerOne);
 		playerOne->setNick(buff);
-		cout << "\nWprowadz nick 2. gracza" << endl;
+		cout << "\nEnter the 2nd player's nick: " << endl;
 		cout << "\n>>>\t";
 		cin >> buff;
 		playerTwo = new Player();
@@ -435,7 +435,7 @@ int Game::gameMode(void) {
 		playerTwo->setNick(buff);
 		break;
 	case 2:
-		cout << "\nWprowadz swoj nick" << endl;
+		cout << "\nEnter your nick:" << endl;
 		cout << "\n>>>\t";
 		cin >> buff;
 		while (getchar() != '\n')
@@ -454,17 +454,17 @@ int Game::gameMode(void) {
 /*Metoda rozpoczyna gre trybu Gracz kontra gracz*/
 void Game::gameStartPVP(void) {
 	cout.put('\n');
-	cout <<"\nGRE ROZPOCZYNA GRACZ: "<< playerOne->getNick() << endl;
+	cout <<"\nPLAYER: "<< playerOne->getNick() << " STARTS THE GAME" << endl;
 	int i = roundCounter;
 	for (i; i < ROUNDS; ++i) {
-		cout << "\nRUNDA " << ++roundCounter <<"\n"<< endl;
+		cout << "\nROUND " << ++roundCounter <<"\n"<< endl;
 		playerOne->nextRound(this, playerTwo);
 		playerTwo->nextRound(this, playerOne);
 		//przerwanie i zczytanie do pliku
 		if (roundCounter != ROUNDS) {
-			cout << "\nWybierz:\n" << endl;
-			cout << "\t[1] - Kontynuacja rozgrywki." << endl;
-			cout << "\t[2] - Zapisz i wyjdz." << endl;
+			cout << "\nChoose:\n" << endl;
+			cout << "\t[1] - continue" << endl;
+			cout << "\t[2] - save and quit" << endl;
 			cout << "\n>>>\t";
 			int m = getTwoOptions<int>();
 			switch (m) {
@@ -473,8 +473,8 @@ void Game::gameStartPVP(void) {
 				break;
 			case 2:
 				game2file();
-				cout << "\nZapisano postep rozgrywki." << endl;
-				cout << "Do zobaczenia nastepnym razem!" << endl;
+				cout << "\nGameplay has been saved" << endl;
+				cout << "See you next time!" << endl;
 				exit(0);
 				break;
 			}
@@ -486,13 +486,13 @@ void Game::gameStartPVC(void) {
 	cout.put('\n');
 	int i = roundCounter;
 	for (i; i < ROUNDS; ++i) {
-		cout << "RUNDA " << ++roundCounter << endl;
+		cout << "ROUND " << ++roundCounter << endl;
 		playerTwo->nextRound(this, playerOne);
 		//przerwanie i zczytanie do pliku
 		if (roundCounter != ROUNDS) {
-			cout << "\nWybierz:\n" << endl;
-			cout << "\t[1] - Kontynuacja rozgrywki." << endl;
-			cout << "\t[2] - Zapisz i wyjdz." << endl;
+			cout << "\nChoose:\n" << endl;
+			cout << "\t[1] - continue" << endl;
+			cout << "\t[2] - save and quit" << endl;
 			cout << "\n>>>\t";
 			int m = getTwoOptions<int>();
 			switch (m) {
@@ -501,8 +501,8 @@ void Game::gameStartPVC(void) {
 				break;
 			case 2:
 				game2file();
-				cout << "\nZapisano postep rozgrywki." << endl;
-				cout << "Do zobaczenia innym razem!" << endl;
+				cout << "\nGameplay has been saved" << endl;
+				cout << "See you next time!" << endl;
 				exit(0);
 				break;
 			}
@@ -512,25 +512,25 @@ void Game::gameStartPVC(void) {
 /*Metoda wyswietla informacje na koniec gry w trybie gracz kontra gracz*/
 void Game::gameEndPvP(void) {
 	if (playerOne->getPoints() < playerTwo->getPoints()) {
-		cout << "Koniec gry!" << endl;
-		cout << "Gratulacje! Wygral gracz " << playerOne->getNick() << " zdobywajac " << playerOne->getPoints() << " pkt." << endl;
-		cout << "Gracz " << playerTwo->getNick() << " zdobyl " << playerTwo->getPoints() << " pkt.\n" << endl;
+		cout << "Game has been ended!" << endl;
+		cout << "Congratulations! Player " << playerOne->getNick() << " won by gaining" << playerOne->getPoints() << " points" << endl;
+		cout << "Player " << playerTwo->getNick() << " gains " << playerTwo->getPoints() << " points.\n" << endl;
 	}
 	else if(playerOne->getPoints() > playerTwo->getPoints()) {
-		cout << "Koniec gry!" << endl;
-		cout << "Gratulacje! Wygral gracz " << playerTwo->getNick() << " zdobywajac " << playerTwo->getPoints() << " pkt." << endl;
-		cout << "Gracz " << playerOne->getNick() << " zdobyl " << playerOne->getPoints() << " pkt.\n" << endl;
+		cout << "Game has been ended!" << endl;
+		cout << "Congratulations! Player " << playerTwo->getNick() << " won by gaining" << playerTwo->getPoints() << " points" << endl;
+		cout << "Player " << playerOne->getNick() << " gains " << playerOne->getPoints() << " points.\n" << endl;
 	}
 	else {
-		cout << "Koniec gry!" << endl;
-		cout << "Remis! Kazdy z graczy zdobyl " << playerOne->getPoints() << " pkt.\n" << endl;
+		cout << "Game has been ended!" << endl;
+		cout << "Draw! Each of the players gained" << playerOne->getPoints() << " points\n" << endl;
 	}
 	saveHistory(*this);
 }
 /*Metoda wyswietla informacje na koniec gry w trybie gracz kontra komputer*/
 void Game::gameEndPvC(void) {
-	cout << "Koniec Gry!" << endl;
-	cout << "Zdobyles " << playerOne->getPoints() << " pkt.\n" << endl;
+	cout << "Game has been ended!" << endl;
+	cout << "You have gained " << playerOne->getPoints() << " points.\n" << endl;
 	saveHistory(*this);
 }
 /*Metoda zapisuje postep gry do pliku*/
